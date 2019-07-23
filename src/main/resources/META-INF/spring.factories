@@ -1,0 +1,4 @@
+# Auto Configure
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.lyw.clickhousestarter.config.ClickHouseStarterAutoConfiguration,\
+  com.lyw.clickhousestarter.config.ClickHouseConnectionHolder
