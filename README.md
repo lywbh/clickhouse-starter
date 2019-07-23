@@ -40,7 +40,7 @@ public class ClickHouseDemoService {
 }
 ```
 ```java
-public class ClickHouseDemoMapper {
+public interface ClickHouseDemoMapper {
     
     @Sql("select * from user_info where name = '${name}'")
     List<Map<String, Object>> test(@Param("name") String name);
