@@ -1,7 +1,6 @@
 package com.lyw.clickhousestarter.executor;
 
 import com.lyw.clickhousestarter.config.ClickHouseConnectionHolder;
-import org.springframework.util.StringUtils;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -34,12 +33,7 @@ public class SqlExecutor {
     }
 
     public Object execute() throws SQLException {
-        String finalSql = parseSql();
-        if (StringUtils.startsWithIgnoreCase(finalSql, "SELECT")) {
-            return handleSelect(finalSql);
-        } else {
-            return handleOthers(finalSql);
-        }
+        return handleResult(execSql(parseSql()));
     }
 
     private String parseSql() {
@@ -53,10 +47,21 @@ public class SqlExecutor {
         return parsed;
     }
 
-    private List<Map<String, Object>> handleSelect(String sql) throws SQLException {
+    private ResultSet execSql(String sql) throws SQLException {
         Statement statement = connection.createStatement();
-        ResultSet results = statement.executeQuery(sql);
+        boolean hasResult = statement.execute(sql);
         statement.closeOnCompletion();
+        if (hasResult) {
+            return statement.getResultSet();
+        } else {
+            return null;
+        }
+    }
+
+    private List<Map<String, Object>> handleResult(ResultSet results) throws SQLException {
+        if (results == null) {
+            return null;
+        }
         ResultSetMetaData metaData = results.getMetaData();
         List<Map<String, Object>> r = new ArrayList<>();
         while (results.next()) {
@@ -68,13 +73,6 @@ public class SqlExecutor {
         }
         results.close();
         return r;
-    }
-
-    private Object handleOthers(String sql) throws SQLException {
-        Statement statement = connection.createStatement();
-        statement.execute(sql);
-        statement.closeOnCompletion();
-        return null;
     }
 
 }
