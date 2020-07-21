@@ -13,6 +13,6 @@ import java.lang.annotation.Target;
 @Import(ClickHouseScannerRegistrar.class)
 public @interface MapperScan {
 
-    String[] basePackages();
+    String[] basePackages() default {};
 
 }
